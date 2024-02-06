@@ -82,4 +82,13 @@ Agora com o zookeeper e o kafka rodando, criaremos um tópico para transitar men
     ```
     Resultado: Exibirá todas as mensagens criadas pelo produtor (a tag --from-beginning indica que enxergará todas as mensagens, desde o primeiro envio)
 
+# Aplicando kafka em código
+
+- Cria novo projeto maven
+- Pesquisa dependência do kafka para maven 
+```
+    mvn kafka-clients
+```
+- Aplica dependência no ```pom.xml```
+- Pesquisar dependência sf4j e aplica também
 
