@@ -1,5 +1,6 @@
 package br.com.alura.ecommerce;
 
+import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -19,18 +20,23 @@ public class NewOrderMain {
         ProducerRecord record = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", value, value); // topico onde a mensagem ira ser enviada, chave e valor (ambos preenchido com value)
 
         // Produtor enviando mensagem
-        producer.send(record, (data, ex) -> {
+        Callback callback = (data, ex) -> {
             if (ex != null) {
                 ex.printStackTrace();
                 return;
             }
 
             System.out.println(data.topic() + ":::partition" + data.partition() + " / offset " + data.offset());
-        }).get();
+        };
+        producer.send(record, callback).get();
         /*
             NOTA: O método send não é síncrono (retorna Future), se quiser fazer a execução aguardar, precisa .get()
             Também é possível configurar uma função de callback, exe: avisar que tópico foi criado com sucesso, ou tratar erros
          */
+
+        String emailMessage = "Lorem ipsum ameno dorime";
+        ProducerRecord emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", emailMessage, emailMessage);
+        producer.send(emailRecord, callback).get();
     }
 
     private static Properties properties() {
