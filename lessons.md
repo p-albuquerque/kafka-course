@@ -92,3 +92,5 @@ Agora com o zookeeper e o kafka rodando, criaremos um tópico para transitar men
 - Aplica dependência no ```pom.xml```
 - Pesquisar dependência sf4j e aplica também
 
+# Observações
+- É comum um mesmo produtor enviar mensagens em tópicos diferentes, entretando não é uma boa prática um mesmo consumidor escutar/receber mensagens de diferentes tópicos. Isso fere práticas SOLIDs
