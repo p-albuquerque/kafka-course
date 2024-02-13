@@ -92,5 +92,25 @@ Agora com o zookeeper e o kafka rodando, criaremos um tópico para transitar men
 - Aplica dependência no ```pom.xml```
 - Pesquisar dependência sf4j e aplica também
 
-# Observações
+# Boas práticas
 - É comum um mesmo produtor enviar mensagens em tópicos diferentes, entretando não é uma boa prática um mesmo consumidor escutar/receber mensagens de diferentes tópicos. Isso fere práticas SOLIDs
+
+# Group e Partition
+- Um grupo pode conter um ou mais consumidores. Se um grupo tiver dois consumidores, ambos ouvindo o mesmo tópico. Quando uma nova mensagem chega, esta será recebida apenas por um deles (o responsável pela partição em que a mensagem foi enviada) cada consumidor se encarregará de partições distintas (podendo um consumidor assumir uma ou mais partições).
+Ex:
+    - Tópico: TOPIC_1 (2 partitions);
+    - Consumidores de TOPIC_1: cons1 (group1: partition0), cons2 (group1: partition1)
+    - Mensagens enviadas no TOPIC_1: msg1 (partition0), msg2 (partition1)
+    - msg1 <ins>capturado</ins> por cons1 (cons2 não terá acesso a essa mensagem)
+    - value2 <ins>capturado</ins> por cons2 (cons1 nao terá acesso a essa mensagem)
+
+Para que cons1 e cons2 acessem todas as mensagens de TOPIC_1, eles precisarão estar em groups diferentes.
+
+- Alterando quantidade de Partitions de um tópico já existente:
+```
+    bin/kafka-topics.sh --alter --zookeeper localhost:2181 --topic ECOMMERCE_NEW_ORDER --partitions 3
+```
+OBS: 2181 - zookeeper port
+
+# Partitions e Keys
+Como visto inicialmente, cada mensagem contém chave e valor. Para ser definido em qual partição a mensagem vai ser enviada, leva-se em conta a chave dessa mensagem. Ou seja, se a chave sempre for igual, a mensagem sempre será enviada para a mesma partição.
