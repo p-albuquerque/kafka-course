@@ -9,11 +9,18 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 public abstract class KafkaService {
-    public KafkaService(String classSimpleName, String topic) {
+    public KafkaService(String classSimpleName, Object topic) {
         this._kafkaConsumer = new KafkaConsumer<String, String>(properties(classSimpleName));
-        _kafkaConsumer.subscribe(Collections.singletonList(topic));
+
+        if (topic instanceof String) {
+            _kafkaConsumer.subscribe(Collections.singletonList((String)topic));
+        }
+        else {
+            _kafkaConsumer.subscribe((Pattern)topic);
+        }
     }
 
     public void run() {

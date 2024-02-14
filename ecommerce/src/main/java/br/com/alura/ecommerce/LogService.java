@@ -2,9 +2,11 @@ package br.com.alura.ecommerce;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
+import java.util.regex.Pattern;
+
 public class LogService extends KafkaService {
 
-    public LogService(String topic) {
+    public LogService(Pattern topic) {
         super(LogService.class.getSimpleName(), topic);
     }
 
