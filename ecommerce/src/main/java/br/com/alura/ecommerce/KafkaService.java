@@ -20,13 +20,9 @@ public abstract class KafkaService {
         while(true) {
             ConsumerRecords<String, String> records = _kafkaConsumer.poll(Duration.ofMillis(100));
 
-            if (!records.isEmpty()) {
-
-                for (ConsumerRecord<String, String> record : records) {
-                    consume(record);
-                }
+            for (ConsumerRecord<String, String> record : records) {
+                consume(record);
             }
-
         }
     }
 
