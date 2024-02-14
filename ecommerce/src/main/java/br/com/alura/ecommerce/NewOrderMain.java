@@ -13,17 +13,6 @@ import java.util.concurrent.ExecutionException;
 public class NewOrderMain {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        // Preparando mensagem para tópico NEW_ORDER
-        String key = UUID.randomUUID().toString();
-        String value = "item1";
-
-        ProducerRecord newOrderRecord = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", key, value);
-
-        // Preparando mensagem para tópico _SEND_EMAIL
-        String email = "Seu pedido foi submetido, iniciando análise, aguardando confirmação!";
-
-        ProducerRecord emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", "Email", email);
-
         // Feedback do envio das mensagens
         Callback callback = (data, ex) -> {
             if (ex != null) {
@@ -36,7 +25,21 @@ public class NewOrderMain {
         // Preparando produtor e usando-o para enviar as mensagens dos seus respectivos tópicos
         KafkaProducer producer = new KafkaProducer<String, String>(properties());
 
-        producer.send(newOrderRecord, callback).get();
+        // Enviar 100 mensagens para _NEW_ORDER randomizando as partições que receberão
+        for(int i = 0; i < 100; i++) {
+            // Preparando mensagem para tópico NEW_ORDER
+            String key = UUID.randomUUID().toString();
+            String value = "item#" + i;
+
+            ProducerRecord newOrderRecord = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", key, value);
+            producer.send(newOrderRecord, callback).get();
+        }
+
+        // Preparando mensagem para tópico _SEND_EMAIL
+        String email = "Seu pedido foi submetido, iniciando análise, aguardando confirmação!";
+
+        ProducerRecord emailRecord = new ProducerRecord<>("ECOMMERCE_SEND_EMAIL", "Email", email);
+
         producer.send(emailRecord, callback).get();
     }
 
