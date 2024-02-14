@@ -11,45 +11,42 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class FraudDetectorService {
-    public static void main(String[] args) {
-        // Criar consumidor que ira ouvir as mensagens
-        KafkaConsumer consumer = new KafkaConsumer<String, String>(properties());
 
-        // Inscrever o consumer em um tópico, ou seja, toda nova mensagem enviada neste tópico disparará este serviço
+    public static void main(String[] args) {
+        KafkaConsumer consumer = new KafkaConsumer<String, String>(properties());
         consumer.subscribe(Collections.singletonList("ECOMMERCE_NEW_ORDER"));
 
-        // Manter o consumer escutando em loop
         while(true) {
-            // Verificar se aquele tópico contém alguma nova mensagem enviada, durante um determinado tempo
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 
-            // Verificar se, durante essa "rodada" de escuta, chegou alguma mensagem
             if (!records.isEmpty()) {
-                for (ConsumerRecord<String, String> record : records) {
-                    System.out.println("#########33############################################################");
-                    System.out.println("Checando informações da compra, certificar que não há fraude");
-                    System.out.println(record.key());
-                    System.out.println(record.value());
+                System.out.println("Encontrei " + records.count() + " registros");
+
+                for (ConsumerRecord record : records) {
+                    System.out.println("------------------------------------------");
+                    System.out.println("Checando se há fraude no pedido");
+                    System.out.println("Key :: " + record.key());
+                    System.out.println("Value :: " + record.value());
+                    System.out.println("Partition :: " + record.partition());
+                    System.out.println("offset :: " + record.offset());
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("Checagem finalizada");
                 }
             }
-
         }
     }
 
     private static Properties properties() {
-        // Kafka producer precisa de algumas propriedades:
         Properties properties = new Properties();
 
-        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092"); // Onde escutar o kafka (bootstrap server 9092)
-        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName()); // Chave do map KafkaConsumer irao transformar de bytes para String.
-        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName()); // Valor do map KafkaConsumer irao transformar de bytes para String.
-        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudDetectorService.class.getSimpleName()); // Define o escopo de cada mensagem
-        /*
-            Se apenas um serviço está contido neste group (oq é o caso agora), então este serviço receberá todas as
-            mensagens deste tópico. Se um outro serviço estiver neste mesmo group, então as mensagens serão distribuídas
-            entre ambos, ou seja, a mensagem que um serviço pegou, o outro não pegará.
-        */
-
+        properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, FraudDetectorService.class.getSimpleName());
 
         return properties;
     }
