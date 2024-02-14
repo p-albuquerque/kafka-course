@@ -7,13 +7,14 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public class NewOrderMain {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         // Preparando mensagem para tópico NEW_ORDER
-        String key = "order1";
+        String key = UUID.randomUUID().toString();
         String value = "item1";
 
         ProducerRecord newOrderRecord = new ProducerRecord<>("ECOMMERCE_NEW_ORDER", key, value);
