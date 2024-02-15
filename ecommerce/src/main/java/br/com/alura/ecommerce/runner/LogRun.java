@@ -1,4 +1,7 @@
-package br.com.alura.ecommerce;
+package br.com.alura.ecommerce.runner;
+
+import br.com.alura.ecommerce.services.KafkaService;
+import br.com.alura.ecommerce.services.LogService;
 
 import java.util.regex.Pattern;
 

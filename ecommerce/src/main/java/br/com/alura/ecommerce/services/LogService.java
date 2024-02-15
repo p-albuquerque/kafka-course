@@ -1,5 +1,6 @@
-package br.com.alura.ecommerce;
+package br.com.alura.ecommerce.services;
 
+import br.com.alura.ecommerce.services.KafkaService;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import java.util.regex.Pattern;
