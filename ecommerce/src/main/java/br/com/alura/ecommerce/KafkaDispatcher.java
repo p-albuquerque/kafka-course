@@ -6,11 +6,13 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaDispatcher {
+public class KafkaDispatcher implements Closeable {
 
     private final KafkaProducer<String, String> _producer;
 
@@ -42,5 +44,10 @@ public class KafkaDispatcher {
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
         return properties;
+    }
+
+    @Override
+    public void close() {
+        this._producer.close();
     }
 }
