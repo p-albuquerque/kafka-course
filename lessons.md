@@ -118,3 +118,8 @@ OBS: 2181 - zookeeper port
 
 # Partitions e Keys
 Como visto inicialmente, cada mensagem contém chave e valor. Para ser definido em qual partição a mensagem vai ser enviada, leva-se em conta a chave dessa mensagem. Ou seja, se a chave sempre for igual, a mensagem sempre será enviada para a mesma partição.
+
+# Dados e Log
+O kafka e o zookeeper armazenam dados referentes às mensagens enviadas, tópicos, etc... em arquivos temporários dentro de seus diretórios, geralmente chamados tempDir. Para consultar e alterar este diretório, basta checar
+- `congif/server.properties` -> kafka
+- `config/zookeeper.properties` -> zookeeper
