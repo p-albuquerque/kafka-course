@@ -127,3 +127,15 @@ O kafka e o zookeeper armazenam dados referentes às mensagens enviadas, tópico
 # Serialização
 Vamos usar valores mais significativos para representar os conteúdos da aplicação. Ou seja, quando uma mensagem for enviada pelo produtor, ela conterá o conteúdo relativo àquele tópico.
 Ex: Um novo pedido é enviado, então a mensagem conterá um objeto da classe **Order** e assim por diante. Para que o Dispatcher esteja preparado para receber *quaisquer* tipo de valor na mensagem, precisa-se usar Generics.
+
+Agora precisa-se modificar no properties o Serializer, uma vez que não será apenas string. Vamos utilizar o **gson**.
+1- Importar no **pom.xml**
+```
+<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+<dependency>
+    <groupId>com.google.code.gson</groupId>
+    <artifactId>gson</artifactId>
+    <version>2.10</version>
+</dependency>
+```
+2- Implementar, utilizando essa a classe **gson** como base, o nosso próprio GsonSerializar que consiga ser interpretado pelo kafka, uma vez que este Default trazido pela lib não é.
