@@ -12,15 +12,15 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
-public class KafkaDispatcher implements Closeable {
+public class KafkaDispatcher<T> implements Closeable {
 
-    private final KafkaProducer<String, String> _producer;
+    private final KafkaProducer<String, T> _producer;
 
     public KafkaDispatcher () {
         this._producer = new KafkaProducer<>(properties());
     }
 
-    public void send(String key, String value, String topic) throws ExecutionException, InterruptedException {
+    public void send(String key, T value, String topic) throws ExecutionException, InterruptedException {
         // Feedback do envio das mensagens
         Callback callback = (data, ex) -> {
             if (ex != null) {

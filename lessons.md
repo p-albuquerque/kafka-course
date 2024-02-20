@@ -123,3 +123,7 @@ Como visto inicialmente, cada mensagem contém chave e valor. Para ser definido 
 O kafka e o zookeeper armazenam dados referentes às mensagens enviadas, tópicos, etc... em arquivos temporários dentro de seus diretórios, geralmente chamados tempDir. Para consultar e alterar este diretório, basta checar
 - `congif/server.properties` -> kafka
 - `config/zookeeper.properties` -> zookeeper
+
+# Serialização
+Vamos usar valores mais significativos para representar os conteúdos da aplicação. Ou seja, quando uma mensagem for enviada pelo produtor, ela conterá o conteúdo relativo àquele tópico.
+Ex: Um novo pedido é enviado, então a mensagem conterá um objeto da classe **Order** e assim por diante. Para que o Dispatcher esteja preparado para receber *quaisquer* tipo de valor na mensagem, precisa-se usar Generics.
